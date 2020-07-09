@@ -1,4 +1,14 @@
+.root {
+  display: flex;
+}
+
 .App {
   font-family: sans-serif;
   text-align: center;
+  display: flex;
+  place-items: center;
+  place-content: center;
+  box-sizing: border-box;
+  width: 250px;
+  margin: auto;
 }
