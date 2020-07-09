@@ -38,6 +38,7 @@ const Card = () => {
     if (userSearch) {
       const result = getFilteredUser(usersStore, userSearch);
       setFilteredUsers(result);
+      setTempUserSearch("");
     } else {
       setTempUserSearch("");
       setIteratorIndex(0);
