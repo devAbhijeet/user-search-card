@@ -16,9 +16,25 @@ const Card = () => {
   const [tempUserSearch, setTempUserSearch] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [iteratorIndex, setIteratorIndex] = useState(0);
+  const [withList, setWithList] = useState(true);
+
+  const parentHasPersist = e => {
+    return e && e.target && e.target.parentNode && e.target.parentNode.classList
+      ? e.target.parentNode.classList.contains("persist")
+      : false;
+  };
+
+  const handleDocumentClick = e => {
+    e.stopPropagation();
+    setWithList(e.target.classList.contains("persist"));
+  };
 
   useEffect(() => {
     getUsers().then(u => setUserStore(u.length ? u : users));
+    document.addEventListener("click", handleDocumentClick);
+    return () => {
+      document.removeEventListener("click", handleDocumentClick);
+    };
   }, []);
 
   useEffect(() => {
@@ -26,16 +42,19 @@ const Card = () => {
       const result = getFilteredUser(usersStore, userSearch);
       setFilteredUsers(result);
     } else {
+      setTempUserSearch("");
+      setIteratorIndex(0);
+      setWithList(false);
       setFilteredUsers([]);
     }
   }, [userSearch]);
 
   useEffect(() => {
     setIteratorIndex(0);
+    setWithList(true);
   }, [filteredUsers]);
 
   useEffect(() => {
-    console.log("iteratorIndex ", iteratorIndex);
     if (iteratorIndex === 0) {
       setTempUserSearch(userSearch);
     } else {
@@ -48,8 +67,6 @@ const Card = () => {
     setTempUserSearch("");
     setUserSearch(e.target.value);
   };
-
-  const handleInputChange = _ => console.log("Changed");
 
   const handleKeyUp = e => {
     e.persist();
@@ -64,20 +81,36 @@ const Card = () => {
       nextIndex = Math.abs(++nextIndex % (filteredUsers.length + 1));
       setIteratorIndex(nextIndex);
     }
+    if (whichKey === 13) {
+      setWithList(false);
+      setIteratorIndex(iteratorIndex);
+    }
+  };
+
+  const handleMouseEnter = (e, index) => {
+    e.persist();
+    setIteratorIndex(+index + 1);
+  };
+
+  const handleClick = e => {
+    e.persist();
+    setWithList(false);
+    setIteratorIndex(iteratorIndex);
   };
 
   return (
-    <Container onKeyUp={handleKeyUp}>
+    <Container className="persist" onKeyUp={handleKeyUp}>
       <Input
-        onChange={handleInputChange}
         onInput={handleInput}
         placeholder="Search users by ID, address, name, items"
         value={tempUserSearch ? tempUserSearch : userSearch}
       />
-      {filteredUsers && filteredUsers.length > 0 && (
+      {filteredUsers && filteredUsers.length > 0 && withList && (
         <CardList
           users={filteredUsers}
           userSearch={userSearch}
+          handleMouseEnter={handleMouseEnter}
+          handleClick={handleClick}
           iteratorIndex={iteratorIndex}
         />
       )}

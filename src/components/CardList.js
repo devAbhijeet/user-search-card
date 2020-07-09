@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import CardItem from "./CardItem";
 
@@ -11,14 +11,24 @@ const Container = styled.div`
   font-weight: 200;
 `;
 
-const CardList = ({ users, userSearch, iteratorIndex, ...rest }) => {
+const CardList = ({
+  users,
+  userSearch,
+  handleMouseEnter,
+  handleClick,
+  iteratorIndex,
+  ...rest
+}) => {
   return (
-    <Container {...rest}>
+    <Container className="persist" {...rest}>
       {users.map((user, index) => (
         <CardItem
           key={user.id}
           user={user}
           userSearch={userSearch}
+          index={index}
+          onMouseEnter={e => handleMouseEnter(e, index)}
+          onClick={handleClick}
           isActive={iteratorIndex === index + 1}
         />
       ))}

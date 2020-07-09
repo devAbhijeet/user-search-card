@@ -8,7 +8,7 @@ const InputComponent = styled.input`
 `;
 
 const Input = ({ ...props }) => {
-  return <InputComponent {...props} />;
+  return <InputComponent className="persist" {...props} />;
 };
 
 export default Input;

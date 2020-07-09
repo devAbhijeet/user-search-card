@@ -10,6 +10,9 @@ const Container = styled.div`
   flex-direction: column;
   align-items: flex-start;
   background: ${props => (props.isActive ? "#efefef" : "")};
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const Id = styled.div`
@@ -69,7 +72,7 @@ const withHTML = (str, regex) => ({
   __html: str.replace(regex, str => `<span>${str}</span>`)
 });
 
-const CardItem = ({ user, userSearch, isActive, ...rest }) => {
+const CardItem = ({ user, userSearch, index, isActive, ...rest }) => {
   const regex = new RegExp(userSearch, "ig");
   return (
     <Container isActive={isActive} {...rest}>
