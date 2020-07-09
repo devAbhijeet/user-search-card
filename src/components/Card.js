@@ -8,6 +8,7 @@ import CardList from "./CardList";
 
 const Container = styled.div`
   width: 100%;
+  border: 1px solid #b2b2b2;
 `;
 
 const Card = () => {

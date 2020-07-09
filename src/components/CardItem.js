@@ -2,9 +2,10 @@ import React from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
-  border: 1px solid #b2b2b2;
+  border-bottom: 1px solid #b2b2b2;
   border-top: transparent;
-  padding: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -13,6 +14,15 @@ const Container = styled.div`
   &:hover {
     cursor: pointer;
   }
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 92%;
 `;
 
 const Id = styled.div`
@@ -76,18 +86,20 @@ const CardItem = ({ user, userSearch, index, isActive, ...rest }) => {
   const regex = new RegExp(userSearch, "ig");
   return (
     <Container isActive={isActive} {...rest}>
-      <Id dangerouslySetInnerHTML={withHTML(user.id, regex)} />
-      <Name dangerouslySetInnerHTML={withHTML(user.name, regex)} />
-      {user.inItems ? (
-        <>
-          <Break />
-          <Info>
-            <span>{`"${userSearch}" found in items`}</span>
-          </Info>
-          <Break />
-        </>
-      ) : null}
-      <Address dangerouslySetInnerHTML={withHTML(user.address, regex)} />
+      <Content>
+        <Id dangerouslySetInnerHTML={withHTML(user.id, regex)} />
+        <Name dangerouslySetInnerHTML={withHTML(user.name, regex)} />
+        {user.inItems ? (
+          <>
+            <Break />
+            <Info>
+              <span>{`"${userSearch}" found in items`}</span>
+            </Info>
+            <Break />
+          </>
+        ) : null}
+        <Address dangerouslySetInnerHTML={withHTML(user.address, regex)} />
+      </Content>
     </Container>
   );
 };

@@ -9,6 +9,10 @@ const Container = styled.div`
   place-content: left;
   align-items: flex-start;
   font-weight: 200;
+  height: fit-content;
+  max-height: 225px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 const CardList = ({
