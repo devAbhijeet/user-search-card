@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import CardItem from "./CardItem";
 
@@ -10,7 +10,7 @@ const Container = styled.div`
   align-items: flex-start;
   font-weight: 200;
   height: fit-content;
-  max-height: 225px;
+  max-height: 295px;
   overflow-y: scroll;
   overflow-x: hidden;
 `;
@@ -21,13 +21,16 @@ const CardList = ({
   handleMouseEnter,
   handleClick,
   iteratorIndex,
+  setChildRef,
+  setParentRef,
   ...rest
 }) => {
   return (
-    <Container className="persist" {...rest}>
+    <Container ref={setParentRef} className="persist" {...rest}>
       {users.map((user, index) => (
         <CardItem
           key={user.id}
+          ref={setChildRef}
           user={user}
           userSearch={userSearch}
           index={index}

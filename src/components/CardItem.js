@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -82,10 +82,10 @@ const withHTML = (str, regex) => ({
   __html: str.replace(regex, str => `<span>${str}</span>`)
 });
 
-const CardItem = ({ user, userSearch, index, isActive, ...rest }) => {
+const CardItem = ({ user, userSearch, index, isActive, ...rest }, ref) => {
   const regex = new RegExp(userSearch, "ig");
   return (
-    <Container isActive={isActive} {...rest}>
+    <Container ref={ref} isActive={isActive} {...rest}>
       <Content>
         <Id dangerouslySetInnerHTML={withHTML(user.id, regex)} />
         <Name dangerouslySetInnerHTML={withHTML(user.name, regex)} />
@@ -104,4 +104,4 @@ const CardItem = ({ user, userSearch, index, isActive, ...rest }) => {
   );
 };
 
-export default CardItem;
+export default forwardRef(CardItem);

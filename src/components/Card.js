@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import users from "../data/users";
 import { getUsers } from "../service/user-service";
-import { getFilteredUser } from "../utils/index";
+import { getFilteredUser, scrollIntoView } from "../utils/index";
 import Input from "./Input";
 import CardList from "./CardList";
 
@@ -18,12 +18,8 @@ const Card = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [iteratorIndex, setIteratorIndex] = useState(0);
   const [withList, setWithList] = useState(true);
-
-  const parentHasPersist = e => {
-    return e && e.target && e.target.parentNode && e.target.parentNode.classList
-      ? e.target.parentNode.classList.contains("persist")
-      : false;
-  };
+  let cardItemRefs = [];
+  let cardListContainerRef = useRef(null);
 
   const handleDocumentClick = e => {
     e.stopPropagation();
@@ -48,6 +44,7 @@ const Card = () => {
       setWithList(false);
       setFilteredUsers([]);
     }
+    cardItemRefs = [];
   }, [userSearch]);
 
   useEffect(() => {
@@ -75,16 +72,18 @@ const Card = () => {
     if (whichKey === 38) {
       let nextIndex = iteratorIndex;
       --nextIndex;
-      setIteratorIndex(nextIndex < 0 ? filteredUsers.length : nextIndex);
+      nextIndex = nextIndex < 0 ? filteredUsers.length : nextIndex;
+      setIteratorIndex(nextIndex);
+      scrollIntoView(cardListContainerRef, cardItemRefs, nextIndex);
     }
     if (whichKey === 40) {
       let nextIndex = iteratorIndex;
       nextIndex = Math.abs(++nextIndex % (filteredUsers.length + 1));
       setIteratorIndex(nextIndex);
+      scrollIntoView(cardListContainerRef, cardItemRefs, nextIndex);
     }
     if (whichKey === 13) {
       setWithList(false);
-      setIteratorIndex(iteratorIndex);
     }
   };
 
@@ -99,6 +98,14 @@ const Card = () => {
     setIteratorIndex(iteratorIndex);
   };
 
+  const setChildRef = ref => {
+    cardItemRefs.push(ref);
+  };
+
+  const setParentRef = ref => {
+    cardListContainerRef.current = ref;
+  };
+
   return (
     <Container className="persist" onKeyUp={handleKeyUp}>
       <Input
@@ -108,6 +115,8 @@ const Card = () => {
       />
       {filteredUsers && filteredUsers.length > 0 && withList && (
         <CardList
+          setChildRef={setChildRef}
+          setParentRef={setParentRef}
           users={filteredUsers}
           userSearch={userSearch}
           handleMouseEnter={handleMouseEnter}

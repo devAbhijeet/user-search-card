@@ -1,3 +1,24 @@
+export const scrollIntoView = (
+  cardListContainerRef,
+  cardItemRefs,
+  nextIndex
+) => {
+  nextIndex--;
+  let target = cardItemRefs[nextIndex];
+  let container = cardListContainerRef.current;
+  if (target && container) {
+    const { offsetTop, clientHeight } = target;
+    const eleBottom = offsetTop + clientHeight;
+    const { scrollTop, clientHeight: containerClientHeight } = container;
+    const containerBottom = scrollTop + containerClientHeight;
+    if (offsetTop < scrollTop) {
+      container.scrollTop -= scrollTop;
+    } else if (eleBottom > containerBottom) {
+      container.scrollTop += eleBottom - containerBottom;
+    }
+  }
+};
+
 const toLower = str => str.toLocaleLowerCase();
 
 const matchString = (userField, userSearch) => {
