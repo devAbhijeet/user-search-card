@@ -11,6 +11,20 @@ const Container = styled.div`
   border: 1px solid #b2b2b2;
 `;
 
+const NoData = styled.div`
+  width: 100%;
+  display: flex;
+  place-content: center;
+  align-items: center;
+  font-weight: 200;
+  height: 100px;
+  color: #aaa;
+  font-style: italic;
+  & div {
+    padding: 10px;
+  }
+`;
+
 const Card = () => {
   const [usersStore, setUserStore] = useState([]);
   const [userSearch, setUserSearch] = useState("");
@@ -27,7 +41,9 @@ const Card = () => {
   };
 
   useEffect(() => {
-    getUsers().then(u => setUserStore(u.length ? u : users));
+    getUsers()
+      .then(u => setUserStore(u.length ? u : users))
+      .catch(e => setUserStore(users));
     document.addEventListener("click", handleDocumentClick);
     return () => {
       document.removeEventListener("click", handleDocumentClick);
@@ -125,6 +141,11 @@ const Card = () => {
           handleClick={handleClick}
           iteratorIndex={iteratorIndex}
         />
+      )}
+      {userSearch !== "" && filteredUsers && filteredUsers.length === 0 && (
+        <NoData>
+          <div>{`Search term "${userSearch}" not found`}</div>
+        </NoData>
       )}
     </Container>
   );
