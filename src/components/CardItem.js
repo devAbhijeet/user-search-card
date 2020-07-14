@@ -2,6 +2,7 @@ import React, { forwardRef } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
+  position: relative;
   border-bottom: 1px solid #b2b2b2;
   border-top: transparent;
   padding-top: 10px;
@@ -79,7 +80,7 @@ const Address = styled.div`
 `;
 
 const withHTML = (str, regex) => ({
-  __html: str.replace(regex, str => `<span className="card-item">${str}</span>`)
+  __html: str.replace(regex, str => `<span class="card-item">${str}</span>`)
 });
 
 const CardItem = ({ user, userSearch, index, isActive, ...rest }, ref) => {

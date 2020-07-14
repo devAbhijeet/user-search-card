@@ -32,6 +32,7 @@ const Card = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [iteratorIndex, setIteratorIndex] = useState(0);
   const [withList, setWithList] = useState(true);
+  const [isKeyBoardInteractive, setIsKeyBoardInteractive] = useState(false);
   const [withTempUserSearch, setWithTempUserSearch] = useState(false);
   let cardItemRefs = [];
   let cardListContainerRef = useRef(null);
@@ -92,7 +93,7 @@ const Card = () => {
         setTempUserSearch(filteredUsers[iteratorIndex - 1].name);
       }
     }
-  }, [iteratorIndex]);
+  }, [iteratorIndex, withTempUserSearch]);
 
   const handleInput = e => {
     e.persist();
@@ -109,6 +110,7 @@ const Card = () => {
       nextIndex = nextIndex < 0 ? filteredUsers.length : nextIndex;
       setIteratorIndex(nextIndex);
       setWithTempUserSearch(true);
+      setIsKeyBoardInteractive(true);
       scrollIntoView(cardListContainerRef, cardItemRefs, nextIndex, true);
     }
     if (whichKey === 40) {
@@ -116,16 +118,24 @@ const Card = () => {
       nextIndex = Math.abs(++nextIndex % (filteredUsers.length + 1));
       setIteratorIndex(nextIndex);
       setWithTempUserSearch(true);
+      setIsKeyBoardInteractive(true);
       scrollIntoView(cardListContainerRef, cardItemRefs, nextIndex, true);
     }
     if (whichKey === 13) {
       setWithList(false);
+      setIsKeyBoardInteractive(false);
     }
   };
 
   const handleMouseMove = (e, index) => {
     e.persist();
-    if (e && e.target && e.target.classList.contains("card-item")) {
+    setIsKeyBoardInteractive(false);
+    if (
+      e &&
+      e.target &&
+      e.target.classList.contains("card-item") &&
+      !isKeyBoardInteractive
+    ) {
       setWithTempUserSearch(false);
       setIteratorIndex(+index + 1);
       scrollIntoView(cardListContainerRef, cardItemRefs, +index + 1, false);
@@ -134,9 +144,9 @@ const Card = () => {
 
   const handleClick = e => {
     e.persist();
-    setWithList(false);
     setWithTempUserSearch(true);
     setIteratorIndex(iteratorIndex);
+    setWithList(false);
   };
 
   const setChildRef = ref => {
