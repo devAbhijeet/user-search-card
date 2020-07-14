@@ -79,26 +79,35 @@ const Address = styled.div`
 `;
 
 const withHTML = (str, regex) => ({
-  __html: str.replace(regex, str => `<span>${str}</span>`)
+  __html: str.replace(regex, str => `<span className="card-item">${str}</span>`)
 });
 
 const CardItem = ({ user, userSearch, index, isActive, ...rest }, ref) => {
   const regex = new RegExp(userSearch, "ig");
   return (
-    <Container ref={ref} isActive={isActive} {...rest}>
-      <Content>
-        <Id dangerouslySetInnerHTML={withHTML(user.id, regex)} />
-        <Name dangerouslySetInnerHTML={withHTML(user.name, regex)} />
+    <Container ref={ref} isActive={isActive} {...rest} className="card-item">
+      <Content className="card-item">
+        <Id
+          className="card-item"
+          dangerouslySetInnerHTML={withHTML(user.id, regex)}
+        />
+        <Name
+          className="card-item"
+          dangerouslySetInnerHTML={withHTML(user.name, regex)}
+        />
         {user.inItems ? (
           <>
-            <Break />
-            <Info>
-              <span>{`"${userSearch}" found in items`}</span>
+            <Break className="card-item" />
+            <Info className="card-item">
+              <span className="card-item">{`"${userSearch}" found in items`}</span>
             </Info>
-            <Break />
+            <Break className="card-item" />
           </>
         ) : null}
-        <Address dangerouslySetInnerHTML={withHTML(user.address, regex)} />
+        <Address
+          className="card-item"
+          dangerouslySetInnerHTML={withHTML(user.address, regex)}
+        />
       </Content>
     </Container>
   );

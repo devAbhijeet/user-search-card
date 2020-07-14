@@ -32,6 +32,7 @@ const Card = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [iteratorIndex, setIteratorIndex] = useState(0);
   const [withList, setWithList] = useState(true);
+  const [withTempUserSearch, setWithTempUserSearch] = useState(false);
   let cardItemRefs = [];
   let cardListContainerRef = useRef(null);
 
@@ -40,13 +41,24 @@ const Card = () => {
     setWithList(e.target.classList.contains("persist"));
   };
 
+  const handleMouseMoveOnDom = e => {
+    if (!e.target.classList.contains("card-item")) {
+      setWithTempUserSearch(false);
+      setIteratorIndex(0);
+    } else {
+      return false;
+    }
+  };
+
   useEffect(() => {
     getUsers()
       .then(u => setUserStore(u.length ? u : users))
       .catch(e => setUserStore(users));
     document.addEventListener("click", handleDocumentClick);
+    document.addEventListener("mousemove", handleMouseMoveOnDom);
     return () => {
       document.removeEventListener("click", handleDocumentClick);
+      document.removeEventListener("mousemove", handleMouseMoveOnDom);
     };
   }, []);
 
@@ -56,8 +68,10 @@ const Card = () => {
       setFilteredUsers(result);
       setIteratorIndex(0);
       setTempUserSearch("");
+      setWithTempUserSearch(false);
     } else {
       setTempUserSearch("");
+      setWithTempUserSearch(false);
       setIteratorIndex(0);
       setWithList(false);
       setFilteredUsers([]);
@@ -71,10 +85,12 @@ const Card = () => {
   }, [filteredUsers]);
 
   useEffect(() => {
-    if (iteratorIndex === 0) {
-      setTempUserSearch(userSearch);
-    } else {
-      setTempUserSearch(filteredUsers[iteratorIndex - 1].name);
+    if (withTempUserSearch) {
+      if (iteratorIndex === 0) {
+        setTempUserSearch(userSearch);
+      } else {
+        setTempUserSearch(filteredUsers[iteratorIndex - 1].name);
+      }
     }
   }, [iteratorIndex]);
 
@@ -92,27 +108,34 @@ const Card = () => {
       --nextIndex;
       nextIndex = nextIndex < 0 ? filteredUsers.length : nextIndex;
       setIteratorIndex(nextIndex);
-      scrollIntoView(cardListContainerRef, cardItemRefs, nextIndex);
+      setWithTempUserSearch(true);
+      scrollIntoView(cardListContainerRef, cardItemRefs, nextIndex, true);
     }
     if (whichKey === 40) {
       let nextIndex = iteratorIndex;
       nextIndex = Math.abs(++nextIndex % (filteredUsers.length + 1));
       setIteratorIndex(nextIndex);
-      scrollIntoView(cardListContainerRef, cardItemRefs, nextIndex);
+      setWithTempUserSearch(true);
+      scrollIntoView(cardListContainerRef, cardItemRefs, nextIndex, true);
     }
     if (whichKey === 13) {
       setWithList(false);
     }
   };
 
-  const handleMouseEnter = (e, index) => {
+  const handleMouseMove = (e, index) => {
     e.persist();
-    setIteratorIndex(+index + 1);
+    if (e && e.target && e.target.classList.contains("card-item")) {
+      setWithTempUserSearch(false);
+      setIteratorIndex(+index + 1);
+      scrollIntoView(cardListContainerRef, cardItemRefs, +index + 1, false);
+    }
   };
 
   const handleClick = e => {
     e.persist();
     setWithList(false);
+    setWithTempUserSearch(true);
     setIteratorIndex(iteratorIndex);
   };
 
@@ -137,7 +160,7 @@ const Card = () => {
           setParentRef={setParentRef}
           users={filteredUsers}
           userSearch={userSearch}
-          handleMouseEnter={handleMouseEnter}
+          handleMouseMove={handleMouseMove}
           handleClick={handleClick}
           iteratorIndex={iteratorIndex}
         />

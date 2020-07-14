@@ -18,7 +18,7 @@ const Container = styled.div`
 const CardList = ({
   users,
   userSearch,
-  handleMouseEnter,
+  handleMouseMove,
   handleClick,
   iteratorIndex,
   setChildRef,
@@ -34,7 +34,7 @@ const CardList = ({
           user={user}
           userSearch={userSearch}
           index={index}
-          onMouseEnter={e => handleMouseEnter(e, index)}
+          onMouseEnter={e => handleMouseMove(e, index)}
           onClick={handleClick}
           isActive={iteratorIndex === index + 1}
         />
