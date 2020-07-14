@@ -1,23 +1,34 @@
-const log = (target, container, nextIndex) => {
-  const { offsetTop, clientHeight } = target;
-  const eleBottom = offsetTop + clientHeight;
-  const {
-    scrollTop,
-    clientHeight: containerClientHeight,
-    scrollHeight
-  } = container;
-  const containerBottom = scrollTop + containerClientHeight;
-  console.groupCollapsed();
-  console.log("offsetTop ", offsetTop);
-  console.log("clientHeight ", clientHeight);
-  console.log("eleBottom ", eleBottom);
-  console.log("scrollTop ", scrollTop);
-  console.log("containerClientHeight ", containerClientHeight);
-  console.log("containerBottom ", containerBottom);
-  console.log("nextIndex ", nextIndex);
-  console.log("scrollHeight ", scrollHeight);
-  console.groupEnd();
-};
+// const log = (target, container, nextIndex) => {
+//   const { offsetTop, clientHeight } = target;
+//   const eleBottom = offsetTop + clientHeight;
+//   const {
+//     scrollTop,
+//     clientHeight: containerClientHeight,
+//     scrollHeight
+//   } = container;
+//   const containerBottom = scrollTop + containerClientHeight;
+//   console.groupCollapsed();
+//   console.log("offsetTop ", offsetTop);
+//   console.log("clientHeight ", clientHeight);
+//   console.log("eleBottom ", eleBottom);
+//   console.log("scrollTop ", scrollTop);
+//   console.log("containerClientHeight ", containerClientHeight);
+//   console.log("containerBottom ", containerBottom);
+//   console.log("nextIndex ", nextIndex);
+//   console.log("scrollHeight ", scrollHeight);
+//   console.groupEnd();
+// };
+
+const isVisibleInViewPort = (
+  eleBottom,
+  containerBottom,
+  clientHeight,
+  scrollTop,
+  nextIndex
+) =>
+  (eleBottom < containerBottom ||
+    eleBottom + 25 < containerBottom + clientHeight) &&
+  nextIndex * clientHeight + 10 >= scrollTop;
 
 export const scrollIntoView = (
   cardListContainerRef,
@@ -35,19 +46,22 @@ export const scrollIntoView = (
     const containerBottom = scrollTop + containerClientHeight;
     if (!isKeyBoardScroll) {
       if (
-        !(
-          (eleBottom < containerBottom ||
-            eleBottom + 25 < containerBottom + clientHeight) &&
-          nextIndex * clientHeight + 10 >= scrollTop
+        !isVisibleInViewPort(
+          eleBottom,
+          containerBottom,
+          clientHeight,
+          scrollTop,
+          nextIndex
         )
       ) {
-        log(target, container, nextIndex);
-        console.log("not in view port");
-        // container.scrollTop = scrollTop - (scrollTop % clientHeight);
-        // container.scrollTop = scrollTop + (scrollTop % clientHeight);
-      } else {
-        log(target, container, nextIndex);
-        console.log("in view port");
+        let scrollSection =
+          (eleBottom < containerBottom && true) ||
+          (eleBottom + 25 < containerBottom + clientHeight && false);
+        if (scrollSection) {
+          container.scrollTop = scrollTop - (scrollTop % clientHeight);
+        } else {
+          container.scrollTop = Math.abs(nextIndex - 3) * clientHeight + 5;
+        }
       }
     } else {
       if (offsetTop < scrollTop) {

@@ -34,7 +34,7 @@ const CardList = ({
           user={user}
           userSearch={userSearch}
           index={index}
-          onMouseEnter={e => handleMouseMove(e, index)}
+          onMouseMove={e => handleMouseMove(e, index)}
           onClick={handleClick}
           isActive={iteratorIndex === index + 1}
         />
