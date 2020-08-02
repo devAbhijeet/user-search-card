@@ -6,6 +6,18 @@ import { getFilteredUser, scrollIntoView } from "../utils/index";
 import Input from "./Input";
 import CardList from "./CardList";
 
+const MainContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Info = styled.div`
+  font-style: italic;
+  margin-bottom: 5px;
+  color: #aaa;
+`;
+
 const Container = styled.div`
   width: 100%;
   border: 1px solid #b2b2b2;
@@ -158,29 +170,36 @@ const Card = () => {
   };
 
   return (
-    <Container className="persist" onKeyUp={handleKeyUp}>
-      <Input
-        onInput={handleInput}
-        placeholder="Search users by ID, address, name, items"
-        value={tempUserSearch ? tempUserSearch : userSearch}
-      />
-      {filteredUsers && filteredUsers.length > 0 && withList && (
-        <CardList
-          setChildRef={setChildRef}
-          setParentRef={setParentRef}
-          users={filteredUsers}
-          userSearch={userSearch}
-          handleMouseMove={handleMouseMove}
-          handleClick={handleClick}
-          iteratorIndex={iteratorIndex}
+    <MainContainer>
+      <Info>
+        <small>Search for `123`, bucket, 1st cross, john.</small>
+        <br />
+        <small>use keyboard for navigation.</small>
+      </Info>
+      <Container className="persist" onKeyUp={handleKeyUp}>
+        <Input
+          onInput={handleInput}
+          placeholder="Search users by ID, address, name, items"
+          value={tempUserSearch ? tempUserSearch : userSearch}
         />
-      )}
-      {userSearch !== "" && filteredUsers && filteredUsers.length === 0 && (
-        <NoData>
-          <div>{`Search term "${userSearch}" not found`}</div>
-        </NoData>
-      )}
-    </Container>
+        {filteredUsers && filteredUsers.length > 0 && withList && (
+          <CardList
+            setChildRef={setChildRef}
+            setParentRef={setParentRef}
+            users={filteredUsers}
+            userSearch={userSearch}
+            handleMouseMove={handleMouseMove}
+            handleClick={handleClick}
+            iteratorIndex={iteratorIndex}
+          />
+        )}
+        {userSearch !== "" && filteredUsers && filteredUsers.length === 0 && (
+          <NoData>
+            <div>{`Search term "${userSearch}" not found`}</div>
+          </NoData>
+        )}
+      </Container>
+    </MainContainer>
   );
 };
 
